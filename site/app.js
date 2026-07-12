@@ -143,6 +143,22 @@ function showErrors(errors) {
   els.salary.setAttribute("aria-invalid", errors.salary ? "true" : "false");
 }
 
+// Live validation: surface an error and disable Start once a field holds an
+// invalid value the user typed. Empty fields keep Start enabled so clicking it
+// still shows the "enter a value" message rather than silently doing nothing.
+function refreshValidity() {
+  const result = validateInputs(els.headcount.value, els.salary.value);
+  const typed = (v, err) => (v.trim() !== "" ? err || "" : "");
+  showErrors({
+    headcount: typed(els.headcount.value, result.errors.headcount),
+    salary: typed(els.salary.value, result.errors.salary),
+  });
+  els.start.disabled = Boolean(
+    (els.headcount.value.trim() !== "" && result.errors.headcount) ||
+      (els.salary.value.trim() !== "" && result.errors.salary),
+  );
+}
+
 /* ---------- Control state ---------- */
 
 function showRunningControls(running) {
@@ -212,6 +228,7 @@ function handleReset() {
   exitPresenter();
   syncUrl();
   audio.play("click");
+  refreshValidity();
   els.headcount.focus();
 }
 
@@ -301,7 +318,7 @@ function renderPresets() {
     button.addEventListener("click", () => {
       els.headcount.value = String(preset.headcount);
       els.salary.value = String(preset.salary);
-      showErrors({});
+      refreshValidity();
     });
     els.presets.appendChild(button);
   }
@@ -340,6 +357,7 @@ function bindEvents() {
     if (e.key === "Escape") exitPresenter();
   });
   for (const input of [els.headcount, els.salary]) {
+    input.addEventListener("input", refreshValidity);
     input.addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
         e.preventDefault();
@@ -355,6 +373,7 @@ function init() {
   bindEvents();
   if (!resumeFromUrl()) {
     restoreLastInputs();
+    refreshValidity();
     playBoot();
   }
 }
