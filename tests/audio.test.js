@@ -90,6 +90,62 @@ test("unknown effect names are ignored", () => {
   assert.equal(calls.oscillators, 0);
 });
 
+test("every named voice schedules an oscillator", () => {
+  for (const name of ["start", "milestone", "click"]) {
+    const { FakeAudioContext, calls } = fakeAudioContextFactory();
+    const audio = createAudio({
+      AudioContextCtor: FakeAudioContext,
+      storage: memStorage(),
+    });
+    audio.play(name);
+    assert.equal(calls.oscillators, 1, `${name} builds an oscillator`);
+    assert.equal(calls.gains, 1, `${name} builds a gain node`);
+  }
+});
+
+test("setMuted forces a state and persists it", () => {
+  const storage = memStorage();
+  const audio = createAudio({ AudioContextCtor: null, storage });
+  assert.equal(audio.setMuted(true), true);
+  assert.equal(audio.isMuted(), true);
+  assert.equal(storage.getItem("burn-rate:muted"), "1");
+  assert.equal(audio.setMuted(0), false, "coerces truthiness");
+  assert.equal(storage.getItem("burn-rate:muted"), "0");
+});
+
+test("a suspended context is resumed on play", () => {
+  let resumed = 0;
+  class Suspended {
+    constructor() {
+      this.currentTime = 0;
+      this.state = "suspended";
+      this.destination = {};
+    }
+    resume() {
+      resumed++;
+      this.state = "running";
+    }
+    createOscillator() {
+      return {
+        type: "",
+        frequency: { setValueAtTime() {}, exponentialRampToValueAtTime() {} },
+        connect() {},
+        start() {},
+        stop() {},
+      };
+    }
+    createGain() {
+      return {
+        gain: { setValueAtTime() {}, exponentialRampToValueAtTime() {} },
+        connect() {},
+      };
+    }
+  }
+  const audio = createAudio({ AudioContextCtor: Suspended, storage: memStorage() });
+  audio.unlock();
+  assert.ok(resumed >= 1, "unlock resumes a suspended context");
+});
+
 test("survives storage access throwing", () => {
   const throwingStorage = {
     getItem() {
