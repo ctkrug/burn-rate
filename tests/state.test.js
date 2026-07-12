@@ -57,6 +57,12 @@ test("isPresenter detects the present=1 flag", () => {
   assert.equal(isPresenter(""), false);
 });
 
+test("decoders accept a URLSearchParams instance, not just a string", () => {
+  const params = new URLSearchParams("headcount=5&salary=100000&startedAt=9&present=1");
+  assert.deepEqual(decodeState(params), { headcount: 5, salary: 100000, startedAt: 9 });
+  assert.equal(isPresenter(params), true);
+});
+
 test("buildShareQuery encodes state and optional presenter flag", () => {
   const state = { headcount: 10, salary: 120000, startedAt: 1751328000000 };
   const plain = buildShareQuery(state);
