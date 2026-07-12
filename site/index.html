@@ -42,10 +42,10 @@
   </head>
   <body>
     <main class="room" id="room">
-      <header class="wordmark">
+      <h1 class="wordmark">
         <span class="wordmark__glyph">$</span
         ><span class="wordmark__text">Burn&nbsp;Rate</span>
-      </header>
+      </h1>
 
       <noscript>
         <p class="noscript">
@@ -130,6 +130,83 @@
 
       <p class="sr-only" id="live" aria-live="polite"></p>
     </main>
+
+    <section class="about" aria-labelledby="about-title">
+      <div class="about__inner">
+        <h2 id="about-title" class="about__h">What is Burn Rate?</h2>
+        <p>
+          Burn Rate is a live meeting cost calculator you run in the browser.
+          Type in how many people are in the room and their average salary, hit
+          Start, and a dollar figure climbs several times a second for as long
+          as the meeting runs. Instead of a static total you read after the
+          call, you see the cost of the meeting as a live counter the whole room
+          can watch while it is still happening.
+        </p>
+        <p>
+          Most calculators hand you one number once the meeting is over, and
+          that number is easy to ignore. Burn Rate answers "how much does this
+          meeting cost" in real time, while there is still time to end the call
+          early. Screen-share the tab or paste the link into the meeting chat
+          and every attendee sees the same running total.
+        </p>
+
+        <a class="btn btn--primary about__cta" href="https://github.com/ctkrug/burn-rate">
+          View on GitHub
+        </a>
+
+        <h2 class="about__h">How the meeting cost is calculated</h2>
+        <p>
+          The math is deliberately plain, so it holds up if someone in the room
+          asks about it. Each salary is converted to a per-second rate over a
+          standard 2,080-hour work year (40 hours a week, 52 weeks), then
+          multiplied by the headcount. There are no invented multipliers and no
+          "meeting tax". Ten people earning an average of $120,000 a year burn
+          about $9.62 every minute they spend in a meeting together, or roughly
+          $577 an hour.
+        </p>
+
+        <h2 class="about__h">Questions</h2>
+        <dl class="faq">
+          <dt>How much does this meeting cost?</dt>
+          <dd>
+            It depends on who is in the room. Enter the headcount and average
+            salary and Burn Rate shows the exact running cost, updating live. As
+            a rule of thumb, ten people earning $120,000 burn roughly $9.62 a
+            minute, or about $577 an hour.
+          </dd>
+          <dt>Is Burn Rate a meeting cost calculator?</dt>
+          <dd>
+            Yes, with one difference: it is a live meeting cost calculator.
+            Ordinary calculators give a static total after the meeting; Burn
+            Rate counts up on screen during it, which is what actually makes a
+            room wrap up.
+          </dd>
+          <dt>How does the live counter work?</dt>
+          <dd>
+            The cost of this meeting shows as a live counter driven by a
+            per-second burn rate. Once you hit Start the figure ticks up in the
+            browser several times a second, with no server involved.
+          </dd>
+          <dt>Do I need an account or an install?</dt>
+          <dd>
+            No. Burn Rate is a single static page with no login, no database,
+            and no backend. Open the link and it runs.
+          </dd>
+          <dt>How do I share the counter with the room?</dt>
+          <dd>
+            Every setting lives in the link. Copy Link puts the current counter
+            on your clipboard, and whoever opens it sees the same total already
+            running from the same start time. Presenter mode strips the page
+            down to the digits for a clean screen-share.
+          </dd>
+        </dl>
+
+        <p class="portfolio">
+          More by Charlie Krug
+          <a href="https://apps.charliekrug.com">apps.charliekrug.com</a>
+        </p>
+      </div>
+    </section>
 
     <script type="module" src="app.js"></script>
   </body>
