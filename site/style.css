@@ -20,6 +20,8 @@
   --motion-ui: 150ms ease-out;
   --motion-flash: 90ms ease-out;
 
+  --glow: 0 0 8px rgba(255, 176, 0, 0.65), 0 0 28px rgba(255, 176, 0, 0.35);
+
   --font-display: "VT323", ui-monospace, "Courier New", monospace;
   --font-ui: "Space Grotesk", system-ui, -apple-system, sans-serif;
 }
@@ -35,55 +37,375 @@ body {
 }
 
 body {
-  background: radial-gradient(ellipse at top, var(--surface-1) 0%, var(--bg) 70%);
+  /* Layered vignette + faint amber pool so the room never reads as flat black. */
+  background:
+    radial-gradient(ellipse 120% 80% at 50% 30%, rgba(255, 176, 0, 0.06), transparent 60%),
+    radial-gradient(ellipse at top, var(--surface-1) 0%, var(--bg) 72%);
   color: var(--text);
   font-family: var(--font-ui);
   min-height: 100vh;
 }
 
+/* CRT scanline texture over the whole room. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0,
+    rgba(0, 0, 0, 0) 2px,
+    rgba(0, 0, 0, 0.12) 3px
+  );
+  mix-blend-mode: multiply;
+  opacity: 0.5;
+  z-index: 5;
+}
+
 .room {
+  position: relative;
+  z-index: 1;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--space-4);
-  padding: var(--space-4);
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-3);
   text-align: center;
 }
 
+/* ---------- Wordmark ---------- */
 .wordmark {
   font-family: var(--font-display);
-  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
   letter-spacing: 0.06em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+.wordmark__glyph {
+  color: var(--accent);
+  text-shadow: var(--glow);
+  margin-right: 0.15em;
+}
+.wordmark__text {
   color: var(--text);
 }
 
-.wordmark__glyph {
-  color: var(--accent);
-  text-shadow: 0 0 8px rgba(255, 176, 0, 0.65), 0 0 28px rgba(255, 176, 0, 0.35);
-}
-
-.ticker {
-  width: min(90vw, 900px);
-  min-height: 60vh;
+/* ---------- Setup form ---------- */
+.setup {
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
+  align-items: flex-end;
   justify-content: center;
+  gap: var(--space-2) var(--space-3);
+  width: min(92vw, 720px);
+  padding: var(--space-3);
   background: var(--surface-1);
   border: 1px solid var(--surface-2);
   border-radius: var(--radius);
 }
 
-.ticker__digits {
-  font-family: var(--font-display);
-  font-size: clamp(3rem, 12vw, 9rem);
-  color: var(--accent);
-  text-shadow: 0 0 8px rgba(255, 176, 0, 0.65), 0 0 28px rgba(255, 176, 0, 0.35);
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+  flex: 1 1 200px;
+}
+.field__label {
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.field__input {
+  font-family: var(--font-ui);
+  font-size: 1.1rem;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid #2b2b33;
+  border-radius: var(--radius);
+  padding: 12px var(--space-2);
+  min-height: 48px;
+  transition:
+    border-color var(--motion-ui),
+    box-shadow var(--motion-ui);
+}
+.field__input::placeholder {
+  color: #55555f;
+}
+.field__input:hover {
+  border-color: #3a3a44;
+}
+.field__input:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(255, 176, 0, 0.3);
+}
+.field__input[aria-invalid="true"] {
+  border-color: var(--accent-support);
+}
+.field__error {
   margin: 0;
+  min-height: 1.1em;
+  font-size: 0.8rem;
+  color: var(--accent-support);
 }
 
-.tagline {
+/* ---------- Presets ---------- */
+.presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  flex-basis: 100%;
+  justify-content: center;
+}
+.preset {
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
   color: var(--text-muted);
-  font-size: 0.95rem;
+  background: transparent;
+  border: 1px solid var(--surface-2);
+  border-radius: 999px;
+  padding: 8px 14px;
+  min-height: 40px;
+  cursor: pointer;
+  transition:
+    color var(--motion-ui),
+    border-color var(--motion-ui),
+    background var(--motion-ui);
+}
+.preset:hover {
+  color: var(--text);
+  border-color: var(--accent);
+}
+.preset:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(255, 176, 0, 0.3);
+}
+
+/* ---------- Ticker hero ---------- */
+.ticker {
+  position: relative;
+  width: min(94vw, 1100px);
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  background:
+    radial-gradient(ellipse at center, rgba(255, 176, 0, 0.05), transparent 70%),
+    var(--surface-1);
+  border: 1px solid var(--surface-2);
+  border-radius: var(--radius);
+  box-shadow: inset 0 0 0 1px rgba(255, 176, 0, 0.04);
+  overflow: hidden;
+}
+.ticker__digits {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 15vw, 12rem);
+  line-height: 0.9;
+  color: var(--accent);
+  text-shadow: var(--glow);
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+  transition:
+    color var(--motion-flash),
+    transform var(--motion-flash);
+  will-change: transform;
+}
+
+/* Boot-up flicker: the sign powers on. */
+.ticker__digits.is-booting {
+  animation: boot-flicker 400ms steps(6, end);
+}
+@keyframes boot-flicker {
+  0% { opacity: 0; filter: brightness(2.4); }
+  15% { opacity: 1; filter: brightness(0.5); }
+  30% { opacity: 0.6; filter: brightness(1.8); }
+  50% { opacity: 1; filter: brightness(1); }
+  65% { opacity: 0.4; filter: brightness(2); }
+  100% { opacity: 1; filter: brightness(1); }
+}
+
+/* Milestone flash: pulse red and scale up 2%. */
+.ticker__digits.is-milestone {
+  animation: milestone-pulse 340ms ease-out;
+}
+@keyframes milestone-pulse {
+  0% { color: var(--accent); transform: scale(1); }
+  26% { color: var(--accent-support); transform: scale(1.02); }
+  100% { color: var(--accent); transform: scale(1); }
+}
+
+/* ---------- Sub-readouts ---------- */
+.readouts {
+  display: flex;
+  gap: var(--space-4);
+  color: var(--text-muted);
+}
+.readout {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.readout__value {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  color: var(--text);
+  letter-spacing: 0.02em;
+}
+
+/* ---------- Controls ---------- */
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  justify-content: center;
+  align-items: center;
+}
+.btn {
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid #2b2b33;
+  border-radius: var(--radius);
+  padding: 12px var(--space-3);
+  min-height: 48px;
+  min-width: 48px;
+  cursor: pointer;
+  transition:
+    transform var(--motion-ui),
+    border-color var(--motion-ui),
+    background var(--motion-ui),
+    color var(--motion-ui);
+}
+.btn:hover {
+  border-color: var(--accent);
+}
+.btn:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(255, 176, 0, 0.35);
+}
+.btn:active {
+  transform: translateY(2px);
+}
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+  border-color: #2b2b33;
+}
+.btn--primary {
+  color: #0a0a0d;
+  background: var(--accent);
+  border-color: var(--accent);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  box-shadow: 0 0 18px rgba(255, 176, 0, 0.35);
+}
+.btn--primary:hover:not(:disabled) {
+  background: #ffc033;
+}
+.btn--icon {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+}
+.btn.is-confirmed {
+  color: var(--success);
+  border-color: var(--success);
+}
+
+.exit-present {
+  position: fixed;
+  top: var(--space-2);
+  right: var(--space-2);
+  z-index: 6;
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  background: var(--surface-2);
+  border: 1px solid #2b2b33;
+  border-radius: 999px;
+  padding: 10px 16px;
+  min-height: 44px;
+  cursor: pointer;
+  transition: color var(--motion-ui), border-color var(--motion-ui);
+}
+.exit-present:hover,
+.exit-present:focus-visible {
+  outline: none;
+  color: var(--text);
+  border-color: var(--accent);
+}
+
+/* ---------- Presenter mode ---------- */
+.room.is-presenting .setup,
+.room.is-presenting .readouts .readout:first-child {
+  display: none;
+}
+.room.is-presenting .controls .btn:not(#pause):not(#reset):not(#mute) {
+  display: none;
+}
+.room.is-presenting .ticker {
+  min-height: 74vh;
+}
+
+/* ---------- Utility ---------- */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- Breakpoints ---------- */
+@media (max-width: 640px) {
+  .ticker {
+    min-height: 55vh;
+  }
+  .ticker__digits {
+    font-size: clamp(2.5rem, 17vw, 5rem);
+  }
+  .readouts {
+    gap: var(--space-3);
+  }
+  .controls {
+    width: 100%;
+  }
+  .btn--primary {
+    flex: 1 1 100%;
+  }
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .ticker__digits {
+    transition: color var(--motion-flash);
+    will-change: auto;
+  }
+  .ticker__digits.is-booting {
+    animation: none;
+  }
+  .ticker__digits.is-milestone {
+    animation: none;
+    color: var(--accent-support);
+  }
+  .btn:active {
+    transform: none;
+  }
 }
