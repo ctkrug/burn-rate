@@ -3,7 +3,7 @@ export default [
     ignores: ["node_modules/", "dist/"],
   },
   {
-    files: ["**/*.js"],
+    files: ["site/**/*.js"],
     languageOptions: {
       ecmaVersion: "latest",
       sourceType: "module",
@@ -16,7 +16,24 @@ export default [
         AudioContext: "readonly",
         requestAnimationFrame: "readonly",
         navigator: "readonly",
+      },
+    },
+    rules: {
+      "no-unused-vars": "error",
+      "no-undef": "error",
+      eqeqeq: "error",
+      "prefer-const": "error",
+    },
+  },
+  {
+    files: ["scripts/**/*.js", "tests/**/*.js", "eslint.config.js"],
+    languageOptions: {
+      ecmaVersion: "latest",
+      sourceType: "module",
+      globals: {
+        console: "readonly",
         process: "readonly",
+        URL: "readonly",
       },
     },
     rules: {
