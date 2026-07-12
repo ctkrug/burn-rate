@@ -24,6 +24,20 @@ test("decodeState returns null for non-positive or non-numeric values", () => {
   assert.equal(decodeState("headcount=abc&salary=100000&startedAt=1"), null);
 });
 
+test("decodeState rejects a fractional headcount from a tampered link", () => {
+  // validateInputs requires a whole number of people; a decoded link must not
+  // slip past that and run a "2.5 people" counter.
+  assert.equal(decodeState("headcount=2.5&salary=100000&startedAt=1"), null);
+});
+
+test("decodeState accepts a whole-number headcount", () => {
+  assert.deepEqual(decodeState("headcount=3&salary=100000&startedAt=5"), {
+    headcount: 3,
+    salary: 100000,
+    startedAt: 5,
+  });
+});
+
 test("isPresenter detects the present=1 flag", () => {
   assert.equal(isPresenter("present=1"), true);
   assert.equal(isPresenter("headcount=5&present=1"), true);
