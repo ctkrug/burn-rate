@@ -270,6 +270,34 @@ test("cost/min readout reflects the computed per-minute rate", () => {
   dom.getEl("reset").emit("click");
 });
 
+test("mute state survives a reset", () => {
+  dom.getEl("mute").emit("click"); // mute
+  assert.equal(global.localStorage.getItem("burn-rate:muted"), "1");
+  startRunning();
+  dom.getEl("reset").emit("click");
+  assert.equal(dom.getEl("mute-glyph").textContent, "✗", "still muted after reset");
+  assert.equal(global.localStorage.getItem("burn-rate:muted"), "1");
+  dom.getEl("mute").emit("click"); // restore unmuted for later tests
+});
+
+test("starting again after a reset counts cleanly from zero", () => {
+  startRunning("10", "120000");
+  dom.advance(5000);
+  dom.flushFrame();
+  dom.getEl("reset").emit("click");
+  assert.equal(dom.getEl("ticker-digits").textContent, "$0.00");
+
+  startRunning("10", "120000");
+  dom.flushFrame();
+  const rate = costPerSecond(10, 120000);
+  // Fresh run: total is ~0 again, not carried over from the previous 5s.
+  assert.equal(dom.getEl("ticker-digits").textContent, formatCurrency(0));
+  dom.advance(1000);
+  dom.flushFrame();
+  assert.equal(dom.getEl("ticker-digits").textContent, formatCurrency(rate * 1));
+  dom.getEl("reset").emit("click");
+});
+
 test("dom flows restore", () => {
   dom.restore();
 });
