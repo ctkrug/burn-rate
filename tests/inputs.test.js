@@ -62,6 +62,31 @@ test("every preset validates", () => {
   }
 });
 
+test("whitespace-only fields are rejected, not treated as valid", () => {
+  const r = validateInputs("   ", "\t");
+  assert.equal(r.valid, false);
+  assert.ok(r.errors.headcount);
+  assert.ok(r.errors.salary);
+});
+
+test("unicode digits and emoji are rejected", () => {
+  // Arabic-Indic digits and an emoji are not parseable as Number.
+  assert.equal(validateInputs("١٠", "120000").valid, false);
+  assert.equal(validateInputs("10", "💰").valid, false);
+});
+
+test("surrounding whitespace around a real number is tolerated", () => {
+  const r = validateInputs("  10  ", "  120000  ");
+  assert.equal(r.valid, true);
+  assert.equal(r.headcount, 10);
+  assert.equal(r.salary, 120000);
+});
+
+test("Infinity and huge overflow strings are rejected", () => {
+  assert.equal(validateInputs("Infinity", "120000").valid, false);
+  assert.equal(validateInputs("10", "1e400").valid, false); // -> Infinity
+});
+
 test("save then load round-trips the last inputs", () => {
   const storage = memStorage();
   saveLastInputs(storage, { headcount: 12, salary: 130000 });
