@@ -242,6 +242,34 @@ test("pressing Enter in a field starts the counter (keyboard path)", () => {
   dom.getEl("reset").emit("click");
 });
 
+test("invalid input toggles aria-invalid for screen readers", () => {
+  const headcount = dom.getEl("headcount");
+  headcount.value = "-3";
+  dom.getEl("salary").value = "120000";
+  headcount.emit("input");
+  assert.equal(headcount.getAttribute("aria-invalid"), "true");
+  headcount.value = "8";
+  headcount.emit("input");
+  assert.equal(headcount.getAttribute("aria-invalid"), "false");
+});
+
+test("the SR live region is populated while running", () => {
+  startRunning("10", "120000");
+  dom.flushFrame();
+  const live = dom.getEl("live");
+  assert.ok(live.textContent.length > 0, "live region announces the total");
+  assert.ok(/spent after/.test(live.textContent));
+  dom.getEl("reset").emit("click");
+});
+
+test("cost/min readout reflects the computed per-minute rate", () => {
+  startRunning("10", "120000");
+  dom.flushFrame();
+  const rate = costPerSecond(10, 120000);
+  assert.equal(dom.getEl("cost-per-min").textContent, formatCurrency(rate * 60));
+  dom.getEl("reset").emit("click");
+});
+
 test("dom flows restore", () => {
   dom.restore();
 });
