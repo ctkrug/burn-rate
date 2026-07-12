@@ -39,6 +39,9 @@ export default [
         console: "readonly",
         process: "readonly",
         URL: "readonly",
+        global: "readonly",
+        setTimeout: "readonly",
+        clearTimeout: "readonly",
       },
     },
     rules: {
