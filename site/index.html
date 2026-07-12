@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Burn Rate — watch the meeting's cost climb live</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="room">
+      <header class="wordmark" aria-hidden="false">
+        <span class="wordmark__glyph">$</span>Burn&nbsp;Rate
+      </header>
+
+      <section class="ticker" id="ticker" aria-live="off">
+        <p class="ticker__digits" id="ticker-digits">$0.00</p>
+      </section>
+
+      <p class="tagline">Scaffold in progress — the live counter lands in the next build.</p>
+    </main>
+
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
