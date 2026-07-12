@@ -28,7 +28,7 @@ export function decodeState(search) {
   const startedAt = Number(params.get("startedAt"));
 
   if (
-    !Number.isFinite(headcount) ||
+    !Number.isInteger(headcount) ||
     !Number.isFinite(salary) ||
     !Number.isFinite(startedAt) ||
     headcount <= 0 ||
