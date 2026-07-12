@@ -225,10 +225,10 @@ test("the running total is mirrored into the tab title and restored on reset", (
   dom.advance(3000);
   dom.flushFrame();
   const rate = costPerSecond(10, 120000);
-  assert.equal(document.title, `${formatCurrency(rate * 3)} · Burn Rate`);
+  assert.equal(global.document.title, `${formatCurrency(rate * 3)} · Burn Rate`);
 
   dom.getEl("reset").emit("click");
-  assert.ok(document.title.startsWith("Burn Rate"), "base title restored");
+  assert.ok(global.document.title.startsWith("Burn Rate"), "base title restored");
 });
 
 test("pressing Enter in a field starts the counter (keyboard path)", () => {
