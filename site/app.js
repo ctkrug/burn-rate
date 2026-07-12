@@ -51,7 +51,7 @@ let copyTimer = null;
 const MILESTONE_SOUND_MS = 400; // rate-limit stacked milestone blips
 const LIVE_INTERVAL_MS = 5000; // throttle the SR live region
 const TITLE_INTERVAL_MS = 1000; // throttle the tab-title burn readout
-const BASE_TITLE = "Burn Rate — watch the meeting's cost climb live";
+const BASE_TITLE = "Burn Rate · Live meeting cost calculator";
 let lastTitleUpdate = 0;
 
 /* ---------- Rendering ---------- */
