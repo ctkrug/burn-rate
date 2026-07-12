@@ -50,6 +50,9 @@ let copyTimer = null;
 
 const MILESTONE_SOUND_MS = 400; // rate-limit stacked milestone blips
 const LIVE_INTERVAL_MS = 5000; // throttle the SR live region
+const TITLE_INTERVAL_MS = 1000; // throttle the tab-title burn readout
+const BASE_TITLE = "Burn Rate — watch the meeting's cost climb live";
+let lastTitleUpdate = 0;
 
 /* ---------- Rendering ---------- */
 
@@ -107,6 +110,13 @@ function tick() {
       elapsedSeconds,
     )}`;
     lastLiveUpdate = now;
+  }
+
+  // Surface the running total in the tab title so a backgrounded or
+  // minimized-into-a-tab instrument still reads at a glance.
+  if (now - lastTitleUpdate >= TITLE_INTERVAL_MS) {
+    document.title = `${formatCurrency(total)} · Burn Rate`;
+    lastTitleUpdate = now;
   }
 
   lastRenderedTotal = total;
@@ -229,6 +239,8 @@ function handleReset() {
   els.costPerMin.textContent = formatCurrency(0);
   els.elapsed.textContent = "0:00";
   els.live.textContent = "";
+  document.title = BASE_TITLE;
+  lastTitleUpdate = 0;
   showRunningControls(false);
   exitPresenter();
   syncUrl();

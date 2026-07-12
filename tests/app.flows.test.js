@@ -186,12 +186,12 @@ test("mute toggle flips the glyph, aria state, and persists to storage", () => {
   dom.getEl("mute").emit("click");
   assert.equal(dom.getEl("mute-glyph").textContent, "✗");
   assert.equal(dom.getEl("mute").getAttribute("aria-pressed"), "true");
-  assert.equal(localStorage.getItem("burn-rate:muted"), "1");
+  assert.equal(global.localStorage.getItem("burn-rate:muted"), "1");
 
   dom.getEl("mute").emit("click");
   assert.equal(dom.getEl("mute-glyph").textContent, "♪");
   assert.equal(dom.getEl("mute").getAttribute("aria-pressed"), "false");
-  assert.equal(localStorage.getItem("burn-rate:muted"), "0");
+  assert.equal(global.localStorage.getItem("burn-rate:muted"), "0");
 });
 
 test("copy link puts the shareable URL on the clipboard", async () => {
@@ -218,6 +218,17 @@ test("crossing a $1,000 milestone flashes the digits, then reverts", () => {
     "reverts so reduced-motion returns to amber",
   );
   dom.getEl("reset").emit("click");
+});
+
+test("the running total is mirrored into the tab title and restored on reset", () => {
+  startRunning("10", "120000");
+  dom.advance(3000);
+  dom.flushFrame();
+  const rate = costPerSecond(10, 120000);
+  assert.equal(document.title, `${formatCurrency(rate * 3)} · Burn Rate`);
+
+  dom.getEl("reset").emit("click");
+  assert.ok(document.title.startsWith("Burn Rate"), "base title restored");
 });
 
 test("dom flows restore", () => {
