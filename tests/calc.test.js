@@ -35,3 +35,26 @@ test("formatCurrency renders USD with two decimal places", () => {
   assert.equal(formatCurrency(0), "$0.00");
   assert.equal(formatCurrency(NaN), "$0.00");
 });
+
+test("costPerSecond returns 0 for non-finite Infinity inputs", () => {
+  assert.equal(costPerSecond(Infinity, 100000), 0);
+  assert.equal(costPerSecond(10, Infinity), 0);
+  assert.equal(costPerSecond(-Infinity, 100000), 0);
+});
+
+test("costPerSecond stays finite for huge but valid inputs", () => {
+  const rate = costPerSecond(1e6, 1e9);
+  assert.ok(Number.isFinite(rate) && rate > 0);
+});
+
+test("totalBurned returns 0 for non-finite rate or elapsed", () => {
+  assert.equal(totalBurned(Infinity, 10), 0);
+  assert.equal(totalBurned(2, Infinity), 0);
+  assert.equal(totalBurned(NaN, 10), 0);
+  assert.equal(totalBurned(2, NaN), 0);
+});
+
+test("formatCurrency coerces Infinity to $0.00 rather than '$∞'", () => {
+  assert.equal(formatCurrency(Infinity), "$0.00");
+  assert.equal(formatCurrency(-Infinity), "$0.00");
+});
