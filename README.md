@@ -32,8 +32,18 @@ test runner (`node:test`); linting via ESLint.
 
 ## Status
 
-Early scaffold. See [`docs/VISION.md`](docs/VISION.md) for the product vision and
+Early scaffold. See [`docs/VISION.md`](docs/VISION.md) for the product vision,
+[`docs/DESIGN.md`](docs/DESIGN.md) for the visual direction, and
 [`docs/BACKLOG.md`](docs/BACKLOG.md) for the build plan.
+
+## Development
+
+```sh
+npm install
+npm start   # serves site/ at http://localhost:8080
+npm test    # runs the unit tests (node:test)
+npm run lint
+```
 
 ## License
 
