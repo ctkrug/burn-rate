@@ -98,6 +98,19 @@ test("load returns null when nothing is stored or data is corrupt", () => {
   assert.equal(loadLastInputs(memStorage({ "burn-rate:last-inputs": "{" })), null);
 });
 
+test("load rejects hand-edited storage that fails validation", () => {
+  // Someone edits localStorage to junk values; restore must decline, not
+  // repopulate the form with a fractional or negative headcount.
+  const frac = memStorage({
+    "burn-rate:last-inputs": JSON.stringify({ headcount: 2.5, salary: 100000 }),
+  });
+  assert.equal(loadLastInputs(frac), null);
+  const neg = memStorage({
+    "burn-rate:last-inputs": JSON.stringify({ headcount: -3, salary: -1 }),
+  });
+  assert.equal(loadLastInputs(neg), null);
+});
+
 test("persistence helpers no-op without storage", () => {
   assert.doesNotThrow(() => saveLastInputs(null, { headcount: 1, salary: 1 }));
   assert.equal(loadLastInputs(null), null);
