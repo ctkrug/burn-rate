@@ -26,7 +26,7 @@ The first story of Epic 1 is the wow moment — it lands before anything optiona
 
 ## Epic 2 — Shareable & room-ready
 
-- [ ] **2.1 Shareable state via URL**
+- [x] **2.1 Shareable state via URL**
   - After Start, the URL updates with `headcount`, `salary`, and `startedAt` query params
     without a full page reload.
   - Opening a URL containing valid params in a fresh tab resumes a live, already-ticking
@@ -34,13 +34,13 @@ The first story of Epic 1 is the wow moment — it lands before anything optiona
   - A "Copy Link" control copies the current shareable URL to the clipboard and shows a brief
     visible confirmation.
 
-- [ ] **2.2 Presenter mode**
+- [x] **2.2 Presenter mode**
   - Toggling presenter mode hides the setup form and any non-essential chrome, leaving only the
     ticker and minimal controls visible.
   - Presenter mode state persists across a page reload (via URL param or `localStorage`).
   - Pressing Escape, or a visible exit control, returns from presenter mode to the full view.
 
-- [ ] **2.3 Design polish — milestone flash and sub-readouts**
+- [x] **2.3 Design polish — milestone flash and sub-readouts**
   - Crossing each $1,000 increment of the running total triggers a brief flash/pulse on the
     ticker panel using `--accent-support`.
   - A "cost per minute" and "elapsed time" sub-readout are visible near the main counter while
@@ -50,7 +50,7 @@ The first story of Epic 1 is the wow moment — it lands before anything optiona
 
 ## Epic 3 — Trust, accessibility & robustness
 
-- [ ] **3.1 Input validation, presets, and persistence**
+- [x] **3.1 Input validation, presets, and persistence**
   - Entering a non-numeric or negative value in headcount or salary shows an inline error and
     disables the Start button.
   - At least two one-click quick-fill presets (e.g. "10 people @ $120k") populate both fields
@@ -58,13 +58,13 @@ The first story of Epic 1 is the wow moment — it lands before anything optiona
   - Reloading the page before clicking Start restores the last-entered headcount/salary values
     from `localStorage`.
 
-- [ ] **3.2 Keyboard and screen-reader support**
+- [x] **3.2 Keyboard and screen-reader support**
   - Start, Pause, and Reset are all reachable via Tab and operable via Enter/Space.
   - The counter's live region updates at most once every 5 seconds for assistive tech (not on
     every animation frame), while the visual display keeps updating at full rate.
   - Every icon-only control has an `aria-label` describing its action.
 
-- [ ] **3.3 Design polish — synthesized audio and brand pass**
+- [x] **3.3 Design polish — synthesized audio and brand pass**
   - A synthesized WebAudio milestone sound plays on each $1,000 crossed when unmuted, and the
     mute toggle's state persists across reloads via `localStorage`.
   - No audio call throws in an environment without `AudioContext` (verified by a test that
