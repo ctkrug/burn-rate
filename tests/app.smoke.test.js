@@ -139,6 +139,22 @@ test("Start with a blank field shows an error instead of counting", () => {
   assert.ok(dom.getEl("headcount-error").textContent.length > 0);
   assert.equal(dom.getEl("setup").hidden, false, "did not start");
   assert.equal(digits.textContent, "$0.00");
+});
+
+test("typing an invalid value shows an error and disables Start", () => {
+  const start = dom.getEl("start");
+  const headcount = dom.getEl("headcount");
+
+  headcount.value = "-3";
+  dom.getEl("salary").value = "120000";
+  headcount.emit("input");
+  assert.equal(start.disabled, true, "Start disabled on invalid input");
+  assert.ok(dom.getEl("headcount-error").textContent.length > 0);
+
+  headcount.value = "8";
+  headcount.emit("input");
+  assert.equal(start.disabled, false, "Start re-enabled once valid");
+  assert.equal(dom.getEl("headcount-error").textContent, "");
 
   dom.restore();
 });
