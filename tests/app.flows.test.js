@@ -231,6 +231,17 @@ test("the running total is mirrored into the tab title and restored on reset", (
   assert.ok(document.title.startsWith("Burn Rate"), "base title restored");
 });
 
+test("pressing Enter in a field starts the counter (keyboard path)", () => {
+  const headcount = dom.getEl("headcount");
+  headcount.value = "10";
+  dom.getEl("salary").value = "120000";
+  headcount.emit("keydown", { key: "Enter" });
+  dom.flushFrame();
+  assert.equal(dom.getEl("setup").hidden, true, "started without a mouse");
+  assert.equal(dom.getEl("pause").hidden, false);
+  dom.getEl("reset").emit("click");
+});
+
 test("dom flows restore", () => {
   dom.restore();
 });
