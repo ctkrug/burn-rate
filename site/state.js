@@ -40,3 +40,21 @@ export function decodeState(search) {
 
   return { headcount, salary, startedAt };
 }
+
+/** Presenter mode travels in the URL as `present=1` so it survives a reload. */
+export function isPresenter(search) {
+  const params =
+    search instanceof URLSearchParams ? search : new URLSearchParams(search);
+  return params.get("present") === "1";
+}
+
+/**
+ * Build the shareable query string: the running state plus an optional
+ * presenter flag. Returned without a leading "?".
+ * @param {{headcount: number, salary: number, startedAt: number}} state
+ * @param {boolean} [presenter]
+ */
+export function buildShareQuery(state, presenter = false) {
+  const query = encodeState(state);
+  return presenter ? `${query}&present=1` : query;
+}
