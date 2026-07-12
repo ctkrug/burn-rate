@@ -1,0 +1,16 @@
+{
+  "name": "burn-rate",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A real-time dollar counter for meetings — screen-share it and watch the room's cost climb live.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test tests/",
+    "lint": "eslint .",
+    "start": "node scripts/serve.js"
+  },
+  "license": "MIT"
+}
