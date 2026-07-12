@@ -2,6 +2,18 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { costPerSecond, totalBurned, formatCurrency } from "../site/calc.js";
 
+// Deterministic PRNG (mulberry32) so the property tests are reproducible.
+function prng(seed) {
+  let t = seed >>> 0;
+  return () => {
+    t += 0x6d2b79f5;
+    let x = t;
+    x = Math.imul(x ^ (x >>> 15), x | 1);
+    x ^= x + Math.imul(x ^ (x >>> 7), x | 61);
+    return ((x ^ (x >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
 test("costPerSecond computes dollars/second from headcount and salary", () => {
   // 1 person at $2,080/yr and 2080 work-hours/yr is exactly $1/hr = 1/3600 $/s.
   const rate = costPerSecond(1, 2080);
@@ -57,4 +69,26 @@ test("totalBurned returns 0 for non-finite rate or elapsed", () => {
 test("formatCurrency coerces Infinity to $0.00 rather than '$∞'", () => {
   assert.equal(formatCurrency(Infinity), "$0.00");
   assert.equal(formatCurrency(-Infinity), "$0.00");
+});
+
+test("property: costPerSecond is linear in headcount and salary", () => {
+  const rand = prng(20260712);
+  for (let i = 0; i < 500; i++) {
+    const n = 1 + Math.floor(rand() * 500);
+    const salary = 1000 + rand() * 500000;
+    const unit = costPerSecond(1, salary);
+    // Scales with headcount...
+    assert.ok(Math.abs(costPerSecond(n, salary) - unit * n) < 1e-6);
+    // ...and with salary, since rate = n*salary/(2080*3600).
+    assert.ok(Math.abs(costPerSecond(n, salary) - costPerSecond(n, 1) * salary) < 1e-6);
+  }
+});
+
+test("property: totalBurned equals rate times elapsed for valid inputs", () => {
+  const rand = prng(424242);
+  for (let i = 0; i < 500; i++) {
+    const rate = rand() * 1000;
+    const secs = rand() * 100000;
+    assert.ok(Math.abs(totalBurned(rate, secs) - rate * secs) < 1e-3);
+  }
 });
