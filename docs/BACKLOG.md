@@ -5,7 +5,7 @@ The first story of Epic 1 is the wow moment — it lands before anything optiona
 
 ## Epic 1 — Core ticker (the wow moment)
 
-- [ ] **1.1 [WOW] Live dollar counter ticks up after Start**
+- [x] **1.1 [WOW] Live dollar counter ticks up after Start**
   - Entering headcount = 10 and average salary = $100,000 and clicking Start begins a visibly
     increasing dollar figure, updating at least 4 times per second.
   - The displayed value N seconds after Start matches `costPerSecond(headcount, salary) * N`
@@ -13,12 +13,12 @@ The first story of Epic 1 is the wow moment — it lands before anything optiona
   - Clicking Start with an empty or zero headcount/salary field shows an inline validation
     message instead of silently starting at $0.
 
-- [ ] **1.2 Pause / resume / reset controls**
+- [x] **1.2 Pause / resume / reset controls**
   - Clicking Pause freezes the displayed number and the elapsed-time readout.
   - Clicking Resume continues counting from the paused elapsed time, not from zero.
   - Clicking Reset returns the display to $0.00 and re-enables the headcount/salary inputs.
 
-- [ ] **1.3 Design polish — LED/CRT ticker readout**
+- [x] **1.3 Design polish — LED/CRT ticker readout**
   - The ticker digits render in the display font (VT323) with the amber glow treatment from
     `docs/DESIGN.md`, not the system UI font.
   - On desktop (1440×900) the ticker panel occupies at least 60% of the viewport height.
