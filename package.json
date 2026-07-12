@@ -12,5 +12,8 @@
     "lint": "eslint .",
     "start": "node scripts/serve.js"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "eslint": "^9.39.5"
+  }
 }
