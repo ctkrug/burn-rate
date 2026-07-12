@@ -27,3 +27,63 @@
 * {
   box-sizing: border-box;
 }
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+}
+
+body {
+  background: radial-gradient(ellipse at top, var(--surface-1) 0%, var(--bg) 70%);
+  color: var(--text);
+  font-family: var(--font-ui);
+  min-height: 100vh;
+}
+
+.room {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  text-align: center;
+}
+
+.wordmark {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  letter-spacing: 0.06em;
+  color: var(--text);
+}
+
+.wordmark__glyph {
+  color: var(--accent);
+  text-shadow: 0 0 8px rgba(255, 176, 0, 0.65), 0 0 28px rgba(255, 176, 0, 0.35);
+}
+
+.ticker {
+  width: min(90vw, 900px);
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-1);
+  border: 1px solid var(--surface-2);
+  border-radius: var(--radius);
+}
+
+.ticker__digits {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 12vw, 9rem);
+  color: var(--accent);
+  text-shadow: 0 0 8px rgba(255, 176, 0, 0.65), 0 0 28px rgba(255, 176, 0, 0.35);
+  margin: 0;
+}
+
+.tagline {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
