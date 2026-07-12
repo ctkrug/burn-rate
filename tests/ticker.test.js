@@ -73,3 +73,27 @@ test("total never goes negative even with a negative rate", () => {
   clock.advance(1000);
   assert.equal(ticker.total(), 0);
 });
+
+test("a start clock in the future reads $0 until real time catches up", () => {
+  // Models a shared link from a sharer whose clock runs ahead of the viewer's:
+  // startedAt is in the future, so elapsed is negative and must clamp to 0.
+  const clock = fakeClock(1000);
+  const ticker = createTicker(clock);
+  ticker.start(3, 6000); // started "5s from now"
+  assert.equal(ticker.total(), 0, "no negative money");
+  assert.equal(ticker.elapsedSeconds() < 0, true, "elapsed is negative pre-catchup");
+  clock.advance(9000); // now 4s past the start
+  assert.equal(ticker.total(), 12, "counts normally once time passes the start");
+});
+
+test("resume after a shared-link start continues from banked elapsed", () => {
+  const clock = fakeClock(10000);
+  const ticker = createTicker(clock);
+  ticker.start(2, 6000); // 4s already elapsed -> $8
+  assert.equal(ticker.total(), 8);
+  ticker.pause();
+  clock.advance(50000);
+  ticker.resume();
+  clock.advance(1000);
+  assert.equal(ticker.total(), 10, "banks the 4s, adds 1s, ignores paused gap");
+});
