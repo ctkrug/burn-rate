@@ -26,6 +26,8 @@ of the room. The static total never made anyone flinch. A live, climbing number 
   the total crosses a $1,000 threshold (with a persistent mute toggle).
 - **Quick-fill presets & recall** — one-click meeting shapes, and the last values you entered
   are restored on reload.
+- **Tab-title readout** — the running total is mirrored into the browser tab title, so a
+  minimized or backgrounded instrument still reads at a glance.
 - **Zero backend** — no server, no database, no accounts. State lives in the URL and browser
   timers; the whole thing is a static site.
 
