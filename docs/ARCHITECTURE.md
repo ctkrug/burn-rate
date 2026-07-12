@@ -13,13 +13,15 @@ only state store. There is no build step — the files in `site/` are served as-
 | `audio.js` | `createAudio(deps)` — synthesized WebAudio SFX + persistent mute; guarded when `AudioContext` absent | no | `tests/audio.test.js` |
 | `inputs.js` | `validateInputs`, `PRESETS`, `save/loadLastInputs` | no | `tests/inputs.test.js` |
 | `state.js` | URL encode/decode, `isPresenter`, `buildShareQuery` | no | `tests/state.test.js` |
-| `app.js` | DOM wiring: event handlers + `requestAnimationFrame` render loop | yes | `tests/app.smoke.test.js` |
+| `app.js` | DOM wiring: event handlers + `requestAnimationFrame` render loop | yes | `tests/app.smoke.test.js`, `tests/app.flows.test.js`, `tests/app.resume.test.js` |
 | `index.html` | Markup: setup form, ticker hero, readouts, controls | — | — |
 | `style.css` | Retro-LED theme, states, keyframes, responsive + reduced-motion | — | — |
 
 **Design rule:** every non-trivial decision lives in a DOM-free module so it is unit-testable;
-`app.js` stays thin glue. The headless smoke test stands up a minimal fake DOM + controllable
-clock to exercise `app.js` without a browser.
+`app.js` stays thin glue. Three headless suites stand up a minimal fake DOM + controllable
+clock to exercise `app.js` without a browser: `app.smoke` (the Start → climbing-number wow
+moment and live validation), `app.flows` (the pause/resume/reset/presenter/mute/copy/milestone
+state machine), and `app.resume` (a shared link auto-resuming a running counter mid-tick).
 
 ## Data flow (the tick)
 
