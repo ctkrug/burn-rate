@@ -45,6 +45,15 @@ npm test    # runs the unit tests (node:test)
 npm run lint
 ```
 
+## Project structure
+
+```
+site/       static app — index.html, style.css, app.js, and pure calc/state modules
+tests/      node:test unit tests for the calc and state modules
+scripts/    local dev tooling (static file server)
+docs/       vision, design direction, and backlog
+```
+
 ## License
 
 MIT — see [`LICENSE`](LICENSE).
