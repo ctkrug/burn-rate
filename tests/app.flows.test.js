@@ -167,6 +167,59 @@ test("reset returns to idle and clears the URL", () => {
   assert.equal(dom.lastUrl(), "/", "query stripped on reset");
 });
 
+test("presenter mode toggles the room class, URL flag, and Escape exits", () => {
+  startRunning();
+  dom.getEl("present").emit("click");
+  assert.equal(dom.getEl("room").classList.contains("is-presenting"), true);
+  assert.equal(dom.getEl("present").getAttribute("aria-pressed"), "true");
+  assert.equal(dom.getEl("exit-present").hidden, false);
+  assert.ok(dom.lastUrl().includes("present=1"), "presenter flag in URL");
+
+  dom.emitKey("Escape");
+  assert.equal(dom.getEl("room").classList.contains("is-presenting"), false);
+  assert.equal(dom.getEl("exit-present").hidden, true);
+  assert.ok(!dom.lastUrl().includes("present=1"), "flag cleared on exit");
+  dom.getEl("reset").emit("click");
+});
+
+test("mute toggle flips the glyph, aria state, and persists to storage", () => {
+  dom.getEl("mute").emit("click");
+  assert.equal(dom.getEl("mute-glyph").textContent, "✗");
+  assert.equal(dom.getEl("mute").getAttribute("aria-pressed"), "true");
+  assert.equal(localStorage.getItem("burn-rate:muted"), "1");
+
+  dom.getEl("mute").emit("click");
+  assert.equal(dom.getEl("mute-glyph").textContent, "♪");
+  assert.equal(dom.getEl("mute").getAttribute("aria-pressed"), "false");
+  assert.equal(localStorage.getItem("burn-rate:muted"), "0");
+});
+
+test("copy link puts the shareable URL on the clipboard", async () => {
+  startRunning("10", "120000");
+  dom.getEl("copy-link").emit("click");
+  await Promise.resolve(); // let the async clipboard write settle
+  const url = dom.clipboard.written.at(-1);
+  assert.ok(url.startsWith("http://test/?"), "absolute share URL");
+  assert.ok(url.includes("headcount=10") && url.includes("salary=120000"));
+  dom.getEl("reset").emit("click");
+});
+
+test("crossing a $1,000 milestone flashes the digits, then reverts", () => {
+  // High rate so a single second clears a $1,000 band.
+  startRunning("100000", "100000");
+  dom.advance(1000);
+  dom.flushFrame();
+  const digits = dom.getEl("ticker-digits");
+  assert.equal(digits.classList.contains("is-milestone"), true, "flashed");
+  dom.flushTimers(); // fire the flash-clear timeout
+  assert.equal(
+    digits.classList.contains("is-milestone"),
+    false,
+    "reverts so reduced-motion returns to amber",
+  );
+  dom.getEl("reset").emit("click");
+});
+
 test("dom flows restore", () => {
   dom.restore();
 });
