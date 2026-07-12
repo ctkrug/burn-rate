@@ -38,6 +38,18 @@ test("decodeState accepts a whole-number headcount", () => {
   });
 });
 
+test("decodeState rejects values with trailing junk", () => {
+  assert.equal(decodeState("headcount=10x&salary=100000&startedAt=1"), null);
+  assert.equal(decodeState("headcount=10&salary=1e400&startedAt=1"), null);
+});
+
+test("decodeState ignores unrelated extra params (forward-compatible)", () => {
+  const decoded = decodeState(
+    "headcount=5&salary=100000&startedAt=9&present=1&theme=neon",
+  );
+  assert.deepEqual(decoded, { headcount: 5, salary: 100000, startedAt: 9 });
+});
+
 test("isPresenter detects the present=1 flag", () => {
   assert.equal(isPresenter("present=1"), true);
   assert.equal(isPresenter("headcount=5&present=1"), true);
