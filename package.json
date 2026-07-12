@@ -2,7 +2,7 @@
   "name": "burn-rate",
   "version": "0.1.0",
   "private": true,
-  "description": "A real-time dollar counter for meetings — screen-share it and watch the room's cost climb live.",
+  "description": "A live meeting cost calculator you screen-share: watch the room's cost climb in real time.",
   "type": "module",
   "engines": {
     "node": ">=20"
