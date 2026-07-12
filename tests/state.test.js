@@ -58,7 +58,7 @@ test("isPresenter detects the present=1 flag", () => {
 });
 
 test("decoders accept a URLSearchParams instance, not just a string", () => {
-  const params = new URLSearchParams("headcount=5&salary=100000&startedAt=9&present=1");
+  const params = new global.URLSearchParams("headcount=5&salary=100000&startedAt=9&present=1");
   assert.deepEqual(decodeState(params), { headcount: 5, salary: 100000, startedAt: 9 });
   assert.equal(isPresenter(params), true);
 });

@@ -298,6 +298,17 @@ test("starting again after a reset counts cleanly from zero", () => {
   dom.getEl("reset").emit("click");
 });
 
+test("elapsed readout formats minutes and zero-pads seconds", () => {
+  startRunning("10", "120000");
+  dom.advance(125_000); // 2 minutes, 5 seconds
+  dom.flushFrame();
+  assert.equal(dom.getEl("elapsed").textContent, "2:05");
+  dom.advance(4_000); // -> 2:09
+  dom.flushFrame();
+  assert.equal(dom.getEl("elapsed").textContent, "2:09");
+  dom.getEl("reset").emit("click");
+});
+
 test("dom flows restore", () => {
   dom.restore();
 });
