@@ -87,6 +87,23 @@ test("Infinity and huge overflow strings are rejected", () => {
   assert.equal(validateInputs("10", "1e400").valid, false); // -> Infinity
 });
 
+test("property: any positive integer headcount + positive salary validates", () => {
+  let seed = 99;
+  const rand = () => {
+    seed = (seed * 1103515245 + 12345) & 0x7fffffff;
+    return seed / 0x7fffffff;
+  };
+  for (let i = 0; i < 300; i++) {
+    const headcount = 1 + Math.floor(rand() * 1000);
+    const salary = 1 + Math.floor(rand() * 500000);
+    assert.equal(validateInputs(headcount, salary).valid, true);
+    // A fractional headcount of the same magnitude must be rejected.
+    assert.equal(validateInputs(headcount + 0.5, salary).valid, false);
+    // A non-positive salary must be rejected.
+    assert.equal(validateInputs(headcount, -salary).valid, false);
+  }
+});
+
 test("save then load round-trips the last inputs", () => {
   const storage = memStorage();
   saveLastInputs(storage, { headcount: 12, salary: 130000 });
