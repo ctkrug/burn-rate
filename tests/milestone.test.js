@@ -41,3 +41,23 @@ test("MILESTONE_STEP default is $1000", () => {
   assert.equal(MILESTONE_STEP, 1000);
   assert.equal(milestonesCrossed(0, 1000), 1);
 });
+
+test("property: crossings are additive across an intermediate point", () => {
+  // For a<=b<=c, splitting the interval at b must count the same crossings —
+  // this is what makes a per-frame check equivalent to one big jump.
+  let seed = 7;
+  const rand = () => {
+    seed = (seed * 1103515245 + 12345) & 0x7fffffff;
+    return seed / 0x7fffffff;
+  };
+  for (let i = 0; i < 400; i++) {
+    const a = rand() * 20000;
+    const b = a + rand() * 20000;
+    const c = b + rand() * 20000;
+    assert.equal(
+      milestonesCrossed(a, c),
+      milestonesCrossed(a, b) + milestonesCrossed(b, c),
+      `additivity failed for ${a},${b},${c}`,
+    );
+  }
+});
