@@ -71,11 +71,16 @@ function updateReadouts(total, elapsedSeconds) {
   els.digits.setAttribute("aria-label", `${formatCurrency(total)} burned`);
 }
 
+let flashTimer = null;
 function flashMilestone() {
   els.digits.classList.remove("is-milestone");
   // Force reflow so the animation restarts on back-to-back milestones.
   void els.digits.offsetWidth;
   els.digits.classList.add("is-milestone");
+  // Clear after the pulse so reduced-motion (which swaps color instead of
+  // animating) reverts to amber rather than staying red.
+  if (flashTimer) clearTimeout(flashTimer);
+  flashTimer = setTimeout(() => els.digits.classList.remove("is-milestone"), 360);
 }
 
 /* ---------- The loop ---------- */
